@@ -50,6 +50,57 @@ Configuration variables:
   but can also increase temperature readings and decrease humidity readings as a side effect.
   Defaults to ``false``.
 
+
+Heater Control with lambda calls
+--------------------------------
+You can make lambda calls to control and retrieve heater state as follows:
+
+.. code-block:: cpp
+ 
+    // Turn On heater
+    id(my_sht3xd_sensor).set_heater_enabled(true);
+
+    // Turn Off Heater
+    id(my_sht3xd_sensor).set_heater_enabled(true);
+
+    // Get state of Heater
+    id(my_sht3xd_sensor).is_heater_enabled();
+
+.. note::
+    The component internally tracks the heater state, a lamdba call to **is_heater_enabled** reads the 
+    SHT3xd sensor heater status register to confirm the actual state of the heater.
+
+A yaml example using these lambda calls follows:
+
+.. code-block:: yaml
+
+    sensor:
+      - platform: sht3xd
+        id: my_sht3xd_sensor
+        temperature:
+            name: Temperature
+        humidity:
+            name: Humidity
+
+    button:
+      - platform: template
+        name: Enable SHT3xd Heater
+        on_press:
+            then:
+              lambda: id(my_sht3xd_sensor).set_heater_enabled(true);
+
+      - platform: template
+        name: Disable SHT3xd Heater
+        on_press:
+            then:
+              lambda: id(my_sht3xd_sensor).set_heater_enabled(false);
+
+    binary_sensor:
+      - platform: template
+        name: SHT3xd Heater state
+        lambda: return id(my_sht3xd_sensor).is_heater_enabled();
+
+
 I²C Configuration when using Higher I²C Frequencies
 ---------------------------------------------------
 
